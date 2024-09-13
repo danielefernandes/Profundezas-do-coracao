@@ -1,5 +1,6 @@
 import json
 
+
 class AutoSave():
     posicao_jogadorX = None
     posicao_jogadorY = None
