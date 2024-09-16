@@ -9,6 +9,8 @@ class Jogador():
     velocidade_movimento = None
     som_andando = None
     fisica = None
+    vida = 100
+    vidaTotal = 100
 
     def __init__(self, load_posicao_X, load_posicao_Y):
         self.som_andando = arcade.load_sound(
@@ -30,7 +32,7 @@ class Jogador():
             arcade.load_texture("./assets/personagem_idle.png",
                                 flipped_horizontally=True)
                                 )
-        self.jSprite.scale = 0.5
+        self.jSprite.scale = 0.4
         self.jDirecao = 1
 
         if (load_posicao_X is not None and
@@ -38,13 +40,13 @@ class Jogador():
             self.jSprite.center_x = load_posicao_X
             self.jSprite.center_y = load_posicao_Y
         else:
-            self.jSprite.center_x = 50
+            self.jSprite.center_x = 500
             self.jSprite.center_y = 100
 
         self.j = arcade.SpriteList()
         self.j.append(self.jSprite)
         self.velocidade_movimento = 3
-        self.velocidade_pulo = 8
+        self.velocidade_pulo = 10
 
     def adiciona_fisica(self, lista_obstaculos):
         self.fisica = arcade.PhysicsEnginePlatformer(

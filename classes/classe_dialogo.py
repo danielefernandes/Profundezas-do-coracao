@@ -32,8 +32,16 @@ class Dialogo():
 
             arcade.draw_text(
                 self.texto[0],
-                x+300, y+100,
+                x+width/3.5, y+height/2,
                 arcade.color.BLACK, 15,
+                width,
+                anchor_x="left",
+                anchor_y="baseline"
+                )
+            arcade.draw_text(
+                "Aperte ESPAÇO.",
+                x+width/1.35, y+height/4,
+                arcade.color.GRAY_ASPARAGUS, 12,
                 width,
                 anchor_x="left",
                 anchor_y="baseline"
