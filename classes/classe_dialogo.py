@@ -7,19 +7,21 @@ class Dialogo():
     fundo = None
 
     def __init__(self) -> None:
-        self.fundo = arcade.load_texture("./assets/fundo_game.png")
+        self.fundo = arcade.load_texture("./assets/fundo_dialogo.png")
 
     def incluir_dialogo(self, t):
-        self.texto.appedn(t)
+        self.texto.append(t)
         self.ativo = True
 
-    def remove_dialogo(self):
-        if self.texto.count() > 0:
+    def remover_dialogo(self):
+        if len(self.texto) > 0:
             self.texto.pop(0)
+            if len(self.texto) == 0:
+                self.ativo = False
         else:
             self.ativo = False
 
-    def draw_dialogo(self, x, y, width, height):
+    def draw(self, x, y, width, height):
         if self.ativo:
             arcade.draw_lrwh_rectangle_textured(
                 x, y,
@@ -30,8 +32,9 @@ class Dialogo():
 
             arcade.draw_text(
                 self.texto[0],
-                x, y,
-                arcade.color.BLACK, 20,
-                anchor_x="center",
-                anchor_y="center"
+                x+300, y+100,
+                arcade.color.BLACK, 15,
+                width,
+                anchor_x="left",
+                anchor_y="baseline"
                 )
