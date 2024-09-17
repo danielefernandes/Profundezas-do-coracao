@@ -5,6 +5,7 @@ import time
 import arcade.color
 from classes.classe_jogador import Jogador
 from classes.classe_dialogo import Dialogo
+from classes.classes_inimigo import Inimigo
 
 
 class TelaGame(arcade.View):
@@ -46,6 +47,12 @@ class TelaGame(arcade.View):
                         center_x=i*distancia_tile,
                         center_y=100)
                 )
+        self.lista_inimigos = Inimigo()
+        distancia_inimigo = 400
+        for i in range(10):
+            self.lista_inimigos.append(
+                        i*distancia_inimigo,
+                        50)
 
         fundo_imagens = (
             "./assets/fundo_game.png",
@@ -68,6 +75,7 @@ class TelaGame(arcade.View):
             self.fundos.append(sprite)
 
         self.jogador.adiciona_fisica(self.lista_cenario)
+        self.lista_inimigos.adiciona_fisica(self.lista_cenario)
 
         self.camera = arcade.Camera(self.window.width, self.window.height)
 
@@ -101,7 +109,7 @@ class TelaGame(arcade.View):
             self.camera.position[0] + self.window.width/8,
             self.camera.position[1] + self.window.height/1.15,
             150, 150,
-            arcade.color.RED,
+            arcade.color.BLUE_GREEN,
             0, self.jogador.vida
         )
         arcade.draw_arc_outline(
@@ -122,6 +130,7 @@ class TelaGame(arcade.View):
         # ===================== GUI ========================
         self.camera.use()
         self.sombra.draw()
+        self.lista_inimigos.draw()
         self.jogador.draw()
         self.dialogo.draw(self.camera.position[0]+self.window.width/4,
                           self.camera.position[1]+50,
@@ -130,6 +139,7 @@ class TelaGame(arcade.View):
 
     def on_update(self, delta_time: float):
         self.jogador.update(delta_time)
+        self.lista_inimigos.update(delta_time)
         self.update_sombra()
         self.move_camera()
 
