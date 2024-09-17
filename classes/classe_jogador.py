@@ -12,7 +12,7 @@ class Jogador():
     vida = 100
     vidaTotal = 100
 
-    def __init__(self, load_posicao_X, load_posicao_Y):
+    def __init__(self, load_posicao_X=500, load_posicao_Y=100):
         self.som_andando = arcade.load_sound(
             './assets/som_jogador_caminhando.ogg', False)
         self.jSprite = arcade.AnimatedWalkingSprite()
@@ -35,13 +35,8 @@ class Jogador():
         self.jSprite.scale = 0.4
         self.jDirecao = 1
 
-        if (load_posicao_X is not None and
-                load_posicao_Y is not None):
-            self.jSprite.center_x = load_posicao_X
-            self.jSprite.center_y = load_posicao_Y
-        else:
-            self.jSprite.center_x = 500
-            self.jSprite.center_y = 100
+        self.jSprite.center_x = load_posicao_X
+        self.jSprite.center_y = load_posicao_Y
 
         self.j = arcade.SpriteList()
         self.j.append(self.jSprite)

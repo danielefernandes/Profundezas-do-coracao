@@ -28,6 +28,7 @@ class AutoSave():
                 return True
         except FileNotFoundError:
             return False
+        return False
 
     def novo_slot(self, path):
         self.path = path

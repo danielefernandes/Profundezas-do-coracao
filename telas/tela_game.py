@@ -15,11 +15,14 @@ class TelaGame(arcade.View):
     game_over = False
     fundos = arcade.SpriteList()
 
-    def __init__(self):
+    def __init__(self, carregaConteudo=False):
         super().__init__()
-        self.jogador = Jogador(
-            self.window.auto_save.posicao_jogadorX,
-            self.window.auto_save.posicao_jogadorY)
+        if carregaConteudo:
+            self.jogador = Jogador(
+                self.window.auto_save.posicao_jogadorX,
+                self.window.auto_save.posicao_jogadorY)
+        else:
+            self.jogador = Jogador()
 
         self.som_fundo = arcade.load_sound(
             './assets/som_fundo.ogg', False)
