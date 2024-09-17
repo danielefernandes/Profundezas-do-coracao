@@ -12,6 +12,7 @@ class TelaGame(arcade.View):
     jogador = None
     dialogo = None
     pause = False
+    game_over = False
     fundos = arcade.SpriteList()
 
     def __init__(self):
@@ -87,7 +88,7 @@ class TelaGame(arcade.View):
 
     def on_draw(self):
         arcade.start_render()
-
+        
         self.duracao_tempo = (time.time()
                               - (self.tempo_inicio +
                                  self.duracao_tempo_anterior))

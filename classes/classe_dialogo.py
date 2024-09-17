@@ -6,7 +6,7 @@ class Dialogo():
     ativo = False
     fundo = None
 
-    def __init__(self) -> None:
+    def __init__(self):
         self.fundo = arcade.load_texture("./assets/fundo_dialogo.png")
 
     def incluir_dialogo(self, t):
