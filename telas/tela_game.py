@@ -1,22 +1,25 @@
 import arcade
 import math
 import time
-
+import arcade.gui
 import arcade.color
 from classes.classe_jogador import Jogador
 from classes.classe_dialogo import Dialogo
 from classes.classes_inimigo import Inimigo
-
+from telas.tela_pause import TelaPause
+from telas.tela_gameover import TelaGameover
 
 class TelaGame(arcade.View):
     jogador = None
     dialogo = None
     pause = False
     game_over = False
+    tempo_grito = 0
     fundos = arcade.SpriteList()
 
     def __init__(self, carregaConteudo=False):
         super().__init__()
+
         if carregaConteudo:
             self.jogador = Jogador(
                 self.window.auto_save.posicao_jogadorX,
@@ -52,10 +55,8 @@ class TelaGame(arcade.View):
                         center_y=100)
                 )
         self.lista_inimigos = Inimigo()
-        distancia_inimigo = 400
-        for i in range(10):
-            self.lista_inimigos.append(
-                        i*distancia_inimigo,
+        self.lista_inimigos.append(
+                        self.jogador.jSprite.center_x + 700,
                         50)
 
         fundo_imagens = (
@@ -77,6 +78,8 @@ class TelaGame(arcade.View):
             sprite.bottom = bottom
             sprite.left = sprite.width
             self.fundos.append(sprite)
+
+        self.grito = arcade.SpriteList()
 
         self.jogador.adiciona_fisica(self.lista_cenario)
         self.lista_inimigos.adiciona_fisica(self.lista_cenario)
@@ -135,26 +138,37 @@ class TelaGame(arcade.View):
         self.camera.use()
         self.sombra.draw()
         self.lista_inimigos.draw()
+        self.grito.draw()
         self.jogador.draw()
+        
         self.dialogo.draw(self.camera.position[0]+self.window.width/4,
                           self.camera.position[1]+50,
                           self.window.width/2,
                           self.window.height/4)
-
+        if len(self.grito) > 0:
+            self.grito.pop()
+        
     def on_update(self, delta_time: float):
-        self.jogador.update(delta_time)
-        self.lista_inimigos.update(delta_time)
-        self.update_sombra()
-        self.move_camera()
+        if self.jogador.vida <= 0 or self.jogador.jSprite.center_y < -200:
+            tela = TelaGameover()
+            self.window.show_view(tela)
+        if not self.pause:
+            self.grito.update()
+            self.lista_inimigos.update(self.grito)
+            self.jogador.update(delta_time, self.lista_inimigos.s)
+            
+            self.update_sombra()
+            self.move_camera()
 
-        camera_x = self.camera.position[0]
-        for count, sprite in enumerate(self.fundos):
-            layer = count // 2
-            frame = count % 2
-            offset = camera_x / (2 ** (layer + 1))
-            jump = (camera_x - offset) // sprite.width
-            final_offset = offset + (jump + frame) * sprite.width
-            sprite.left = final_offset
+            camera_x = self.camera.position[0]
+            for count, sprite in enumerate(self.fundos):
+                layer = count // 2
+                frame = count % 2
+                offset = camera_x / (2 ** (layer + 1))
+                jump = (camera_x - offset) // sprite.width
+                final_offset = offset + (jump + frame) * sprite.width
+                sprite.left = final_offset
+
 
     def on_key_press(self, tecla: int, modifiers: int):
         if tecla == arcade.key.A:
@@ -169,6 +183,15 @@ class TelaGame(arcade.View):
 
         if tecla == arcade.key.W and self.jogador.fisica.can_jump():
             self.jogador.jSprite.change_y = self.jogador.velocidade_pulo
+        
+        if tecla == arcade.key.SPACE and len(self.grito) == 0:
+            sprite_grito = arcade.Sprite(
+                            "./assets/grito.png",
+                            0.6,
+                            center_x=self.jogador.jSprite.center_x,
+                            center_y=self.jogador.jSprite.center_y)
+            self.grito.append(sprite_grito)
+
 
     def on_key_release(self, tecla: int, _modifiers: int):
         if not self.pause:
@@ -178,7 +201,9 @@ class TelaGame(arcade.View):
             if tecla == arcade.key.W or tecla == arcade.key.S:
                 self.jogador.jSprite.change_y = 0
             if tecla == arcade.key.ESCAPE:
-                self.window.show_view(self.window.tela_menu)
+
+                self.window.show_view(TelaPause(self))
+                #self.pause = True
             if tecla == arcade.key.O:
                 self.window.auto_save.posicao_jogadorX = (
                     self.jogador.jSprite.center_x)
@@ -188,6 +213,9 @@ class TelaGame(arcade.View):
 
                 self.window.auto_save.save()
                 print("Jogo salvo com sucesso!")
+        else:
+            if tecla == arcade.key.ESCAPE:
+                self.pause = False
         if tecla == arcade.key.SPACE:
             self.dialogo.remover_dialogo()
             self.pause = False
@@ -206,9 +234,10 @@ class TelaGame(arcade.View):
             self.dialogo.incluir_dialogo("Aiii.. senti um arrepio! Acho melhor ir pelo outro lado.")
             self.sombra.update()
             self.jogador.vida -= 10
-            self.jogador.jSprite.center_x += 30
+            self.jogador.jSprite.center_x += 50
+            self.pause = True
             return None
-
+        
         dx = x - self.sombra.center_x
         dy = y - self.sombra.center_y
         angle = math.atan2(dy, dx)

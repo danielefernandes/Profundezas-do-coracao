@@ -1,15 +1,15 @@
 import arcade
-from telas.tela_game import TelaGame
 
-class TelaMenu(arcade.View):
+class TelaPause(arcade.View):
 
-    def __init__(self):
+    def __init__(self, tela_game = None):
         super().__init__()
+
+        self.tela_game = tela_game
 
         self.fundo = arcade.load_texture("./assets/fundo_menu.png")
         self.camera = arcade.Camera(self.window.width, self.window.height)
-        
-        
+
         self.texturas_botao_normal = [
             arcade.load_texture("./assets/botao_1.png"),
             arcade.load_texture("./assets/botao_2.png"),
@@ -32,12 +32,9 @@ class TelaMenu(arcade.View):
                 center_x=self.window.width / 4,
                 center_y=self.window.height / 2 - i * 50 
             )
-            if i==1 and self.window.jogoCarregado:
-                botao.alpha = 255
-            elif i==1:
+            if i==0:
                 botao.alpha = 100
             self.botoes.append(botao)
-        
 
     def on_draw(self):
         arcade.start_render()
@@ -52,24 +49,19 @@ class TelaMenu(arcade.View):
 
         for botao in self.botoes:
             botao.draw()
-        
 
     def on_mouse_press(self, x: int, y: int, button: int, modifiers: int):
         for index, botao in enumerate(self.botoes):
             if botao.collides_with_point((x, y)):
-                if index == 0:
-                    t2 = TelaGame()
-                    self.window.show_view(t2)
-                if index == 1 and self.window.jogoCarregado:
-                    t2 = TelaGame(carregaConteudo = True)
-                    self.window.show_view(t2)
+                if index == 1:
+                    self.window.show_view(self.tela_game)
                 if index == 3:
                     arcade.close_window()
 
     def on_mouse_motion(self, x: int, y: int, dx: int, dy: int):
         for i, botao in enumerate(self.botoes):
             if botao.collides_with_point((x, y)):
-                if i != 1:
+                if i != 0:
                     botao.texture = self.texturas_botao_selecionado[i]
                 elif self.window.jogoCarregado:
                     botao.texture = self.texturas_botao_selecionado[i]

@@ -48,10 +48,13 @@ class Jogador():
             self.jSprite, lista_obstaculos
             )
 
-    def update(self, delta_time):
+    def update(self, delta_time, inimigos):
         self.j.update_animation(delta_time)
         self.jSprite.update()
         self.fisica.update()
+        for i, s in enumerate(inimigos):
+            if self.jSprite.collides_with_point((s.center_x, s.center_y)):
+                self.vida -= 10
 
     def draw(self):
         self.j.draw()

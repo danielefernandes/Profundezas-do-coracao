@@ -1,15 +1,18 @@
 import arcade
-from telas.tela_game import TelaGame
+#from telas.tela_game import TelaGame
 
-class TelaMenu(arcade.View):
+class TelaGameover(arcade.View):
 
     def __init__(self):
         super().__init__()
 
         self.fundo = arcade.load_texture("./assets/fundo_menu.png")
         self.camera = arcade.Camera(self.window.width, self.window.height)
-        
-        
+        self.titulo = arcade.Text("GAME OVER", 
+                                  0, self.window.height/2,
+                                  align="center",
+                                  width=self.window.width,
+                                  font_size=24)
         self.texturas_botao_normal = [
             arcade.load_texture("./assets/botao_1.png"),
             arcade.load_texture("./assets/botao_2.png"),
@@ -37,7 +40,6 @@ class TelaMenu(arcade.View):
             elif i==1:
                 botao.alpha = 100
             self.botoes.append(botao)
-        
 
     def on_draw(self):
         arcade.start_render()
@@ -52,7 +54,8 @@ class TelaMenu(arcade.View):
 
         for botao in self.botoes:
             botao.draw()
-        
+
+        self.titulo.draw()
 
     def on_mouse_press(self, x: int, y: int, button: int, modifiers: int):
         for index, botao in enumerate(self.botoes):
